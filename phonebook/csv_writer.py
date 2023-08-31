@@ -3,7 +3,7 @@ from contact import Contact
 
 import csv
 from pathlib import Path
-from typing import Iterator, Optional, TextIO
+from typing import Iterator, Optional, TextIO, Union
 
 
 class CsvWriter:
@@ -11,8 +11,10 @@ class CsvWriter:
     _filename: Path
     kwds_csv: dict = {}
 
-    def __init__(self, filename: Path, fieldnames: Optional[list[str]] = None):
-        self._filename = filename
+    def __init__(
+        self, filename: Union[str, Path], fieldnames: Optional[list[str]] = None
+    ):
+        self._filename = filename if isinstance(filename, Path) else Path(filename)
         self._fieldnames = fieldnames
 
     @property
