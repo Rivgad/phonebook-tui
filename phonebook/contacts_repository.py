@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Any, Callable, Iterator
 
 from errors import ItemNotFoundError, KeyFoundError
 from contact import Contact
@@ -19,7 +19,7 @@ class ContactsRepository(CsvWriter):
     def insert(self, contact: Contact, auto_incr_id=True):
         items = self.all()
         if auto_incr_id:
-            max_id = max([item.id for item in items])
+            max_id = max([item.id for item in items], default=0)
             contact.id = max_id + 1
         else:
             if contact.id in [col_item.id for col_item in items]:
@@ -32,34 +32,46 @@ class ContactsRepository(CsvWriter):
     def update(self, id: int, values: dict) -> Contact:
         items = self.all()
 
-        item = [(i, x) for i, x in enumerate(items) if x.id == id]
+        item = next(((i, x) for i, x in enumerate(items) if x.id == id), None)
 
-        if len(item) == 0:
+        if item is None:
             raise ItemNotFoundError(f"Contact with id = {id} not found")
 
-        idx, item = item[0]
+        idx, contact = item
 
         for key, val in values.items():
-            setattr(item, key, val)
+            if key != "id":
+                setattr(contact, key, val)
 
-        items[idx] = item
+        items[idx] = contact
 
         self.write_file(items)
 
-        return item
+        return contact
 
     def delete(self, id: int) -> Contact:
         items = self.all()
 
-        item = [(i, x) for i, x in enumerate(items) if x.id == id]
+        item = next(((i, x) for i, x in enumerate(items) if x.id == id), None)
 
-        if len(item) == 0:
+        if item is None:
             raise ItemNotFoundError(f"Contact with id = {id} not found")
 
-        idx, item = item[0]
+        idx, contact = item
 
         del items[idx]
 
         self.write_file(items)
 
+        return contact
+
+    def get_by_id(self, id: int) -> Contact:
+        item = next(self.query(lambda x: x.id == id), None)
+
+        if item is None:
+            raise ItemNotFoundError(f"Contact with id = {id} not found")
+
         return item
+
+    def query(self, predicate: Callable[[Contact], Any]) -> Iterator[Contact]:
+        return filter(predicate, self.all())
