@@ -1,2 +1,3 @@
-# cli-phonebook
-python test assignment
+# phonebook - tui
+
+Python phonebook tui app to test textual

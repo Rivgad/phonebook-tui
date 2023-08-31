@@ -1,0 +1,26 @@
+EditScreen {
+    align: center middle;
+}
+
+#edit_screen_grid {
+    layout: vertical;
+    padding: 0 1;
+    width: 80%;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+Filter #filter_grid {
+    layout: grid;
+    grid-size: 6 1;
+    grid-columns: 1fr;
+    grid-gutter: 1;
+    height: auto;
+    padding: 1 1;
+    content-align-vertical: middle;
+}
+
+Filter Input {
+    padding: 0 0;
+    outline: hkey $accent;
+}
