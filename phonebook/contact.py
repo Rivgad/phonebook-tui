@@ -25,6 +25,9 @@ class Contact:
     def to_dict(self):
         return asdict(self)
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
     def __str__(self):
         return "; ".join(
             x if x is not None else ""
