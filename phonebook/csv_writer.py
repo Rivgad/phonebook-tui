@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from phonebook.contact import Contact
+from contact import Contact
 
 
 import csv
